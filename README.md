@@ -3,7 +3,7 @@
 # IMG2ASCII
 
 ## Description
-This is a simple program that will convert any image into a ASCII image of a fixed width of 64 characters. 
+This is a simple program that will convert any image into a ASCII image and save the result to a .txt file. 
 
 
 
