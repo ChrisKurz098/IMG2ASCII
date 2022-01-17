@@ -17,7 +17,7 @@ Node.js is required to run this program. After dowloading this repo, run "npm in
          
 
 ## Usage
-Simply place your image file in the root directory. Run the program with "node app [image file] [output width in characters]". The ascii image will be printed in the console and a .txt file will be created with the same name as your original image file.
+Simply place your image file in the root directory. Run the program with "node app [image file] [output width]". The ascii image will be printed in the console and a .txt file will be created with the same name as your original image file.
            
 ## Questions
 Chris Kurz              [Github](https://github.com/chriskurz098)
