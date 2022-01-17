@@ -3,23 +3,29 @@ const fs = require('fs');
 
 let luminaceArr = [];
 let imgWidth = 10;
-const file = process.argv.pop();
-console.log(file);
-const lumConv = [' $', ' @', ' B', ' %', ' 8', ' &', ' W', ' M', ' #', ' *', ' o', ' a', ' h', ' k', ' b', ' d', ' p', ' q', ' w', ' m', ' Z', ' O', ' 0', ' Q', ' L', ' C', ' J', ' U', ' Y', ' X', ' z', ' c', ' v', ' u', ' n', ' x', ' r', ' j', ' f', ' t', ' /', ' ;', ' |', ' (', ' )', ' 1', ' {', ' }', ' [', ' ]', ' ?', ' -', ' _', ' +', ' ~', ' i', ' !', ' l', ' I', ' ;', ' !', ' :', ' >', ' "', ' ^', ' `', ' "', ' .', ' .']
-let newFile = ''
+let size = parseInt(process.argv.slice(3).pop());
+const file = process.argv.slice(2, 3).pop();
+//if user doesnt input a width, default to 64
+if (isNaN(size)) { console.log("Width not defined. Default 64 characters"); size = 64 };
+(file === undefined) ? console.log("enter a file name") : startProgram();
+console.log(file, size);
+const lumConv = [' $', ' @', ' B', ' %', ' 8', ' &', ' W', ' M', ' #', ' *', ' o', ' a', ' h', ' k', ' b', ' d', ' p', ' q', ' w', ' m', ' Z', ' O', ' 0', ' Q', ' L', ' C', ' J', ' U', ' Y', ' X', ' z', ' c', ' v', ' u', ' n', ' x', ' r', ' j', ' f', ' t', ' /', ' ;', ' |', ' (', ' )', ' 1', ' {', ' }', ' [', ' ]', ' ?', ' -', ' _', ' +', ' ~', ' i', ' !', ' l', ' I', ' ;', ' !', ' :', ' >', ' "', ' ^', ' `', ' "', ' .', ' .'];
+
+let newFile = '';
 
 //read file then resize and csave new file
-Jimp.read(file)
-    .then(image => {
-        newFile = 'new_name.' + image.getExtension();
-   
+function startProgram() {
+    Jimp.read(file)
+        .then(image => {
+            newFile = 'new_name.' + image.getExtension();
 
-        image
-            .resize(64, Jimp.AUTO) //resize image based off new width. Allows image to fit on page
-            .write(newFile, generateASCII) //save new file then run function to generate ASCII art
-    });
 
-    //takes the new file and processes it
+            image
+                .resize(size, Jimp.AUTO) //resize image based off new width. Allows image to fit on page
+                .write(newFile, generateASCII) //save new file then run function to generate ASCII art
+        });
+}
+//takes the new file and processes it
 function generateASCII() {
     Jimp.read(newFile)
         .then(image => {
@@ -55,7 +61,7 @@ function makeAsciiFile(arr) {
     let string = ``;
     //the timer keeps track of how many characters are in each row
     let timer = 0;
-//run for loop for length of ascii array
+    //run for loop for length of ascii array
     for (let i = 0; i < arr.length; i++) {
         //if the row of characters is less than the needed width
         if (timer < imgWidth) {
@@ -67,7 +73,7 @@ function makeAsciiFile(arr) {
         else {
             //else create a new line
             string +=
-`
+                `
 `
             //reset the timer
             timer = 0;
@@ -78,11 +84,11 @@ function makeAsciiFile(arr) {
     }
     console.log(string);
     //create the text file with the ascii art
-    fs.writeFile(file.split('.')[0]+'.txt', string, (err) => {
+    fs.writeFile(file.split('.')[0] + '.txt', string, (err) => {
         if (err)
-          console.log(err);
-    console.log('File Created!')
-    //delete the smaller version of the original image
-    fs.unlink(newFile, () => {console.log("Done.")});
+            console.log(err);
+        console.log('File Created!')
+        //delete the smaller version of the original image
+        fs.unlink(newFile, () => { console.log("Done.") });
     });
 }
