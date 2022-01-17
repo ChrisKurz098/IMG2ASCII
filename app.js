@@ -9,7 +9,7 @@ const file = process.argv.slice(2, 3).pop();
 if (isNaN(size)) { console.log("Width not defined. Default 64 characters"); size = 64 };
 (file === undefined) ? console.log("enter a file name") : startProgram();
 console.log(file, size);
-const lumConv = [' $', ' @', ' B', ' %', ' 8', ' &', ' W', ' M', ' #', ' *', ' o', ' a', ' h', ' k', ' b', ' d', ' p', ' q', ' w', ' m', ' Z', ' O', ' 0', ' Q', ' L', ' C', ' J', ' U', ' Y', ' X', ' z', ' c', ' v', ' u', ' n', ' x', ' r', ' j', ' f', ' t', ' /', ' ;', ' |', ' (', ' )', ' 1', ' {', ' }', ' [', ' ]', ' ?', ' -', ' _', ' +', ' ~', ' i', ' !', ' l', ' I', ' ;', ' !', ' :', ' >', ' "', ' ^', ' `', ' "', ' .', ' .'];
+const asciiRamp = [' $', ' @', ' B', ' %', ' 8', ' &', ' W', ' M', ' #', ' *', ' o', ' a', ' h', ' k', ' b', ' d', ' p', ' q', ' w', ' m', ' Z', ' O', ' 0', ' Q', ' L', ' C', ' J', ' U', ' Y', ' X', ' z', ' c', ' v', ' u', ' n', ' x', ' r', ' j', ' f', ' t', ' /', ' ;', ' |', ' (', ' )', ' 1', ' {', ' }', ' [', ' ]', ' ?', ' -', ' _', ' +', ' ~', ' i', ' !', ' l', ' I', ' ;', ' !', ' :', ' >', ' "', ' ^', ' `', ' "', ' .', '  '];
 
 let newFile = '';
 
@@ -21,6 +21,7 @@ function startProgram() {
 
 
             image
+                .grayscale()
                 .resize(size, Jimp.AUTO) //resize image based off new width. Allows image to fit on page
                 .write(newFile, generateASCII) //save new file then run function to generate ASCII art
         });
@@ -33,6 +34,7 @@ function generateASCII() {
             imgWidth = image.bitmap.width;
 
             image
+            //runs through eveey pixle in the image and allows me to extrapolate the RGB value
                 .scan(0, 0, image.bitmap.width, image.bitmap.height, function (x, y, idx) {
                     // x, y is the position of this pixel on the image
                     // idx is the position start position of this rgba tuple in the bitmap Buffer
@@ -67,7 +69,7 @@ function makeAsciiFile(arr) {
         if (timer < imgWidth) {
             let e = arr[i];
             //add the current character to the string and increase the timer
-            string += lumConv[e];
+            string += asciiRamp[e];
             timer += 1
         }
         else {
