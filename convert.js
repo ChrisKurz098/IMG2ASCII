@@ -88,10 +88,9 @@ function makeAsciiFile(arr) {
     }
     //create the text file with the ascii art
     fs.writeFile(file.split('.')[0] + '.txt', string, (err) => {
-        if (err)
-            console.log(err);
+        if (err) console.log(err);
         console.log('\nText File Created!')
-        //delete the smaller version of the original image
+        //delete the scaled version of the original image
         fs.unlink(newFile, () => { console.log("\nDone.") });
     });
 }
