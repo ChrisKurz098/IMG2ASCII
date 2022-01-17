@@ -6,9 +6,11 @@ let imgWidth = 10;
 let size = parseInt(process.argv.slice(3).pop());
 const file = process.argv.slice(2, 3).pop();
 //if user doesnt input a width, default to 64
-if (isNaN(size)) { console.log("Width not defined. Default 64 characters"); size = 64 };
-(file === undefined) ? console.log("enter a file name") : startProgram();
-console.log(file, size);
+if (isNaN(size)) { console.log("\nWidth not defined. Default 64 characters"); size = 64 };
+if (size>500) {console.log('\nWARNING: A width greater than 500 can cause issues with the output file!')};
+(file === undefined) ? console.log("\nenter a file name") : startProgram();
+console.log("\nFile name: ",file, "      Output width: ",size);
+
 const asciiRamp = [' $', ' @', ' B', ' %', ' 8', ' &', ' W', ' M', ' #', ' *', ' o', ' a', ' h', ' k', ' b', ' d', ' p', ' q', ' w', ' m', ' Z', ' O', ' 0', ' Q', ' L', ' C', ' J', ' U', ' Y', ' X', ' z', ' c', ' v', ' u', ' n', ' x', ' r', ' j', ' f', ' t', ' /', ' ;', ' |', ' (', ' )', ' 1', ' {', ' }', ' [', ' ]', ' ?', ' -', ' _', ' +', ' ~', ' i', ' !', ' l', ' I', ' ;', ' !', ' :', ' >', ' "', ' ^', ' `', ' "', ' .', '  '];
 
 let newFile = '';
@@ -84,13 +86,12 @@ function makeAsciiFile(arr) {
         }
 
     }
-    console.log(string);
     //create the text file with the ascii art
     fs.writeFile(file.split('.')[0] + '.txt', string, (err) => {
         if (err)
             console.log(err);
-        console.log('File Created!')
+        console.log('\nText File Created!')
         //delete the smaller version of the original image
-        fs.unlink(newFile, () => { console.log("Done.") });
+        fs.unlink(newFile, () => { console.log("\nDone.") });
     });
 }
