@@ -16,14 +16,14 @@ Jimp.read(file)
 
         image
             .resize(64, Jimp.AUTO) //resize image based off new width. Allows image to fit on page
-            .write(newFile, generateASCII)
+            .write(newFile, generateASCII) //save new file then run function to generate ASCII art
     });
 
     //takes the new file and processes it
 function generateASCII() {
     Jimp.read(newFile)
         .then(image => {
-
+            //save image width to global variable. Needed for makeASCII function
             imgWidth = image.bitmap.width;
 
             image
@@ -51,27 +51,38 @@ function generateASCII() {
 }
 
 function makeAsciiFile(arr) {
+    //create string variabel and a timer to work along with the for loop
     let string = ``;
+    //the timer keeps track of how many characters are in each row
     let timer = 0;
+//run for loop for length of ascii array
     for (let i = 0; i < arr.length; i++) {
+        //if the row of characters is less than the needed width
         if (timer < imgWidth) {
             let e = arr[i];
+            //add the current character to the string and increase the timer
             string += lumConv[e];
             timer += 1
         }
         else {
+            //else create a new line
             string +=
-                `
 `
+`
+            //reset the timer
             timer = 0;
+            //and repeat the instance of i so we can write it to the string
             i--;
         }
 
     }
     console.log(string);
+    //create the text file with the ascii art
     fs.writeFile(file.split('.')[0]+'.txt', string, (err) => {
         if (err)
           console.log(err);
     console.log('File Created!')
+    //delete the smaller version of the original image
+    fs.unlink(newFile, () => {console.log("Done.")});
     });
 }
