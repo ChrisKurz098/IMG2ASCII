@@ -9,23 +9,30 @@ const file = process.argv.slice(2, 3).pop();
 if (isNaN(size)) { console.log("\nWidth not defined. Default 64 characters"); size = 64 };
 if (size>500) {console.log('\nWARNING: A width greater than 500 can cause issues with the output file!')};
 (file === undefined) ? console.log("\nenter a file name") : startProgram();
+
 console.log("\nFile name: ",file, "      Output width: ",size);
 
-const asciiRamp = [' $', ' @', ' B', ' %', ' 8', ' &', ' W', ' M', ' #', ' *', ' o', ' a', ' h', ' k', ' b', ' d', ' p', ' q', ' w', ' m', ' Z', ' O', ' 0', ' Q', ' L', ' C', ' J', ' U', ' Y', ' X', ' z', ' c', ' v', ' u', ' n', ' x', ' r', ' j', ' f', ' t', ' /', ' ;', ' |', ' (', ' )', ' 1', ' {', ' }', ' [', ' ]', ' ?', ' -', ' _', ' +', ' ~', ' i', ' !', ' l', ' I', ' ;', ' !', ' :', ' >', ' "', ' ^', ' `', ' "', ' .', '  '];
+const asciiRamp = [' #', ' #', ' B', ' #', ' 8', ' &', ' W', ' M', ' %', ' *', ' o', ' a', ' h', ' k', ' b', ' d', ' p', ' q', ' w', ' m', ' Z', ' O', ' 0', ' Q', ' L', ' C', ' J', ' U', ' Y', ' X', ' z', ' c', ' v', ' u', ' n', ' x', ' r', ' j', ' f', ' t', ' /', ' ;', ' |', ' (', ' )', ' 1', ' {', ' }', ' [', ' ]', ' ?', ' -', ' _', ' +', ' ~', ' i', ' !', ' l', ' I', ' ;', ' !', ' :', ' >', ' "', ' ^', ' `', ' "', ' .', '  '];
 
+//------------------------------------different ramps to try ---------------------------------------
+
+//--------------------------------------------------------------------------------------------------
 let newFile = '';
+//sharpen kernal
+const kernel =[[0,-1,0],[-1,5,-1],[0,-1,0]];
 
-//read file then resize and csave new file
+//read file then convert to grey scale, resize and save new file
 function startProgram() {
     Jimp.read(file)
         .then(image => {
-            newFile = 'new_name.' + image.getExtension();
-
-
+            newFile = 'new_name' + image.getExtension();
             image
+                .dither565()
                 .grayscale()
                 .resize(size, Jimp.AUTO) //resize image based off new width. Allows image to fit on page
+                .convolute( kernel ) //sharpen the image to make definition better during conversion
                 .write(newFile, generateASCII) //save new file then run function to generate ASCII art
+                
         });
 }
 //takes the new file and processes it
@@ -60,37 +67,34 @@ function generateASCII() {
         });
 }
 
-function makeAsciiFile(arr) {
+function makeAsciiFile(luminaceArr) {
     //create string variabel and a timer to work along with the for loop
     let string = ``;
     //the timer keeps track of how many characters are in each row
     let timer = 0;
     //run for loop for length of ascii array
-    for (let i = 0; i < arr.length; i++) {
+    for (let i = 0; i < luminaceArr.length; i++) {
         //if the row of characters is less than the needed width
         if (timer < imgWidth) {
-            let e = arr[i];
+            let e = luminaceArr[i];
             //add the current character to the string and increase the timer
             string += asciiRamp[e];
             timer += 1
         }
         else {
             //else create a new line
-            string +=
-                `
-`
+            string += `\n`;
             //reset the timer
             timer = 0;
             //and repeat the instance of i so we can write it to the string
             i--;
         }
-
     }
     //create the text file with the ascii art
     fs.writeFile(file.split('.')[0] + '.txt', string, (err) => {
         if (err) console.log(err);
         console.log('\nText File Created!')
         //delete the scaled version of the original image
-        fs.unlink(newFile, () => { console.log("\nDone.") });
+       fs.unlink(newFile, () => { console.log("\nDone.") });
     });
 }
