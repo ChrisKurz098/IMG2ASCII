@@ -13,7 +13,7 @@ This is a simple program that will convert any image into a ASCII image and save
 * [Usage](#usage) 
 
 ## Installation
-Node.js is required to run this program. After dowloading this repo, run "npm install" to install needed libraries.
+Node.js is required to run this program. After dowloading this repo, run "npm install" to install needed packages.
          
 
 ## Usage
